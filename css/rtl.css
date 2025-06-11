@@ -1,0 +1,142 @@
+/* RTL (Right-to-Left) Styles for Pomodoro Timer Application */
+
+/* Base Direction */
+html[dir="rtl"],
+html[dir="rtl"] body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Header */
+html[dir="rtl"] header {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .header-controls {
+    flex-direction: row-reverse;
+}
+
+/* Timer Controls */
+html[dir="rtl"] .timer-controls {
+    flex-direction: row-reverse;
+}
+
+/* Task Input */
+html[dir="rtl"] .task-input-container {
+    flex-direction: row-reverse;
+}
+
+/* Task Filters */
+html[dir="rtl"] .task-filters {
+    flex-direction: row-reverse;
+}
+
+/* Task Items */
+html[dir="rtl"] .task-checkbox {
+    margin-right: 0;
+    margin-left: var(--spacing-small);
+}
+
+html[dir="rtl"] .task-name {
+    margin-right: 0;
+    margin-left: var(--spacing-small);
+}
+
+html[dir="rtl"] .task-pomodoros {
+    margin-right: 0;
+    margin-left: var(--spacing-small);
+}
+
+html[dir="rtl"] .task-actions {
+    flex-direction: row-reverse;
+}
+
+/* Modal Close Button */
+html[dir="rtl"] .close-modal {
+    right: auto;
+    left: var(--spacing-medium);
+}
+
+/* Form Groups */
+html[dir="rtl"] .form-group {
+    text-align: right;
+}
+
+/* Settings Groups */
+html[dir="rtl"] .setting-item {
+    flex-direction: row-reverse;
+}
+
+/* Navigation */
+html[dir="rtl"] .app-nav {
+    flex-direction: row-reverse;
+}
+
+/* Focus Mode Button */
+html[dir="rtl"] .focus-mode-btn {
+    flex-direction: row-reverse;
+}
+
+/* Charts */
+html[dir="rtl"] .charts-container {
+    direction: ltr; /* Charts should remain LTR */
+}
+
+/* Stats Period Selector */
+html[dir="rtl"] .stats-period-selector {
+    flex-direction: row-reverse;
+}
+
+/* Stats Summary */
+html[dir="rtl"] .stats-summary {
+    flex-direction: row-reverse;
+}
+
+/* Font adjustments for Arabic */
+html[dir="rtl"] body {
+    font-family: 'Tajawal', 'Segoe UI', Arial, sans-serif;
+    letter-spacing: 0;
+    line-height: 1.6;
+}
+
+/* Improve Arabic typography */
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3 {
+    font-weight: 700;
+}
+
+html[dir="rtl"] .timer {
+    font-family: 'Tajawal', monospace;
+    font-weight: 700;
+}
+
+html[dir="rtl"] button {
+    font-family: 'Tajawal', 'Segoe UI', Arial, sans-serif;
+    font-weight: 500;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] select,
+html[dir="rtl"] textarea {
+    font-family: 'Tajawal', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Adjust padding and margins for RTL */
+html[dir="rtl"] .task-item {
+    padding-right: 0;
+    padding-left: var(--spacing-small);
+}
+
+html[dir="rtl"] .form-actions {
+    flex-direction: row-reverse;
+}
+
+/* Adjust icon directions */
+html[dir="rtl"] .fa-arrow-right:before {
+    content: "\f060"; /* fa-arrow-left */
+}
+
+html[dir="rtl"] .fa-arrow-left:before {
+    content: "\f061"; /* fa-arrow-right */
+}
