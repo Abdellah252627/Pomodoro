@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dark-mode.css" id="theme-style" disabled>
+    <link rel="stylesheet" href="css/rtl.css" id="rtl-style" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1 data-i18n="app_title">Pomodoro Timer</h1>
+            <div class="header-controls">
+                <button id="language-toggle" title="Toggle Language" aria-label="Toggle Language" data-i18n-title="toggle_language" class="language-toggle">
+                    <i class="fas fa-language"></i>
+                    <span class="language-indicator">EN</span>
+                </button>
+                <button id="dark-mode-toggle" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="help-button" title="Help" aria-label="Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section id="timer-section" class="active-section">
+                <div class="timer-container">
+                    <div class="session-type" id="session-type" data-i18n="work_session">Work Session</div>
+                    <div class="timer" id="timer">25:00</div>
+                    <div class="timer-controls">
+                        <button id="start-timer" class="primary-btn" data-i18n="start">Start</button>
+                        <button id="pause-timer" class="secondary-btn" disabled data-i18n="pause">Pause</button>
+                        <button id="reset-timer" class="secondary-btn" disabled data-i18n="reset">Reset</button>
+                    </div>
+                    <div class="session-progress">
+                        <div class="session-count">
+                            <span id="completed-sessions">0</span> <span data-i18n="sessions_completed">sessions completed</span>
+                        </div>
+                        <div class="progress-indicators">
+                            <span class="indicator" data-session="1"></span>
+                            <span class="indicator" data-session="2"></span>
+                            <span class="indicator" data-session="3"></span>
+                            <span class="indicator" data-session="4"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tasks-section">
+                <div class="tasks-container">
+                    <h2 data-i18n="tasks">Tasks</h2>
+                    <div class="task-input-container">
+                        <input type="text" id="task-input" placeholder="Add a new task..." data-i18n-placeholder="add_task_placeholder">
+                        <button id="add-task" class="primary-btn" data-i18n="add">Add</button>
+                    </div>
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all" data-i18n="all">All</button>
+                        <button class="filter-btn" data-filter="active" data-i18n="active">Active</button>
+                        <button class="filter-btn" data-filter="completed" data-i18n="completed">Completed</button>
+                    </div>
+                    <ul id="task-list" class="task-list"></ul>
+                </div>
+            </section>
+
+            <section id="stats-section">
+                <div class="stats-container">
+                    <h2 data-i18n="statistics">Statistics</h2>
+                    <div class="stats-period-selector">
+                        <button class="period-btn active" data-period="daily" data-i18n="daily">Daily</button>
+                        <button class="period-btn" data-period="weekly" data-i18n="weekly">Weekly</button>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <canvas id="sessions-chart"></canvas>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="tasks-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <div class="stat-value" id="total-focus-time">0h 0m</div>
+                            <div class="stat-label" data-i18n="total_focus_time">Total Focus Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="completed-tasks-count">0</div>
+                            <div class="stat-label" data-i18n="completed_tasks">Completed Tasks</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="productivity-score">0%</div>
+                            <div class="stat-label" data-i18n="productivity_score">Productivity Score</div>
+                        </div>
+                    </div>
+                    <button id="export-stats" class="secondary-btn" data-i18n="export_data">Export Data (CSV)</button>
+                </div>
+            </section>
+
+            <section id="settings-section">
+                <div class="settings-container">
+                    <h2 data-i18n="settings">Settings</h2>
+                    <div class="settings-group">
+                        <h3 data-i18n="timer_settings">Timer Settings</h3>
+                        <div class="setting-item">
+                            <label for="work-duration">Work Duration (minutes)</label>
+                            <input type="number" id="work-duration" min="1" max="120" value="25">
+                        </div>
+                        <div class="setting-item">
+                            <label for="short-break-duration">Short Break Duration (minutes)</label>
+                            <input type="number" id="short-break-duration" min="1" max="30" value="5">
+                        </div>
+                        <div class="setting-item">
+                            <label for="long-break-duration">Long Break Duration (minutes)</label>
+                            <input type="number" id="long-break-duration" min="1" max="60" value="15">
+                        </div>
+                        <div class="setting-item">
+                            <label for="auto-start-breaks">Auto-start Breaks</label>
+                            <input type="checkbox" id="auto-start-breaks" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="auto-start-pomodoros">Auto-start Pomodoros</label>
+                            <input type="checkbox" id="auto-start-pomodoros">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 data-i18n="notification_settings">Notification Settings</h3>
+                        <div class="setting-item">
+                            <label for="enable-notifications">Enable Browser Notifications</label>
+                            <input type="checkbox" id="enable-notifications" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="enable-sounds">Enable Sound Notifications</label>
+                            <input type="checkbox" id="enable-sounds" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="notification-sound">Notification Sound</label>
+                            <select id="notification-sound">
+                                <option value="bell">Bell</option>
+                                <option value="digital">Digital</option>
+                                <option value="gentle">Gentle</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 data-i18n="data_management">Data Management</h3>
+                        <div class="setting-item">
+                            <button id="export-data" class="secondary-btn" data-i18n="export_all_data">Export All Data</button>
+                            <button id="import-data" class="secondary-btn" data-i18n="import_data">Import Data</button>
+                            <input type="file" id="import-file" accept=".json" class="hidden">
+                        </div>
+                    </div>
+                    <button id="save-settings" class="primary-btn" data-i18n="save_settings">Save Settings</button>
+                    <button id="reset-settings" class="secondary-btn" data-i18n="reset_to_default">Reset to Default</button>
+                </div>
+            </section>
+
+            <div id="focus-mode-overlay" class="hidden">
+                <div class="focus-mode-content">
+                    <div class="timer" id="focus-mode-timer">25:00</div>
+                    <div class="session-type" id="focus-mode-session-type" data-i18n="work_session">Work Session</div>
+                    <div class="focus-quote" id="focus-quote"></div>
+                    <button id="exit-focus-mode" class="secondary-btn" data-i18n="exit_focus_mode">Exit Focus Mode</button>
+                </div>
+            </div>
+        </main>
+
+        <nav class="app-nav">
+            <button class="nav-btn active" data-section="timer-section">
+                <i class="fas fa-clock"></i>
+                <span data-i18n="timer">Timer</span>
+            </button>
+            <button class="nav-btn" data-section="tasks-section">
+                <i class="fas fa-tasks"></i>
+                <span data-i18n="tasks_nav">Tasks</span>
+            </button>
+            <button class="nav-btn" data-section="stats-section">
+                <i class="fas fa-chart-bar"></i>
+                <span data-i18n="stats">Stats</span>
+            </button>
+            <button class="nav-btn" data-section="settings-section">
+                <i class="fas fa-cog"></i>
+                <span data-i18n="settings_nav">Settings</span>
+            </button>
+            <button id="focus-mode-btn" class="focus-mode-btn">
+                <i class="fas fa-expand"></i>
+                <span data-i18n="focus_mode">Focus Mode</span>
+            </button>
+        </nav>
+    </div>
+
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 data-i18n="pomodoro_guide">Pomodoro Technique Guide</h2>
+            <div class="guide-content">
+                <p>The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s.</p>
+                <h3>Basic Steps:</h3>
+                <ol>
+                    <li>Choose a task to work on</li>
+                    <li>Set the timer for 25 minutes (one "Pomodoro")</li>
+                    <li>Work on the task until the timer rings</li>
+                    <li>Take a short break (5 minutes)</li>
+                    <li>After 4 Pomodoros, take a longer break (15-30 minutes)</li>
+                </ol>
+                <h3>Tips for Success:</h3>
+                <ul>
+                    <li>Break down complex tasks into smaller, actionable items</li>
+                    <li>If a distraction pops into your head, write it down and come back to it later</li>
+                    <li>Once a Pomodoro starts, it must ring - if you abandon a Pomodoro, it does not count</li>
+                    <li>Use the breaks to rest and recharge, not to think about your work</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="task-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 data-i18n="edit_task">Edit Task</h2>
+            <div class="edit-task-form">
+                <div class="form-group">
+                    <label for="edit-task-name">Task Name</label>
+                    <input type="text" id="edit-task-name">
+                </div>
+                <div class="form-group">
+                    <label for="edit-task-pomodoros">Estimated Pomodoros</label>
+                    <input type="number" id="edit-task-pomodoros" min="1" max="10" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="edit-task-priority">Priority</label>
+                    <select id="edit-task-priority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-task-notes">Notes</label>
+                    <textarea id="edit-task-notes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button id="save-task" class="primary-btn" data-i18n="save">Save</button>
+                    <button id="delete-task" class="danger-btn" data-i18n="delete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/statistics.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/quotes.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
